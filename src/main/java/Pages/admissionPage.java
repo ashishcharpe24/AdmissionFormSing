@@ -431,7 +431,7 @@ public class admissionPage extends PreReq {
 
 				 driver.findElement(By.xpath("//i[@class='glyphicon glyphicon-chevron-right']")).click();
 				 Thread.sleep(1000);
-				 actualMonthAndYear=currDate.getText();
+				 actualMonthAndYearSchoolAttending=currDate.getText();
 				 Thread.sleep(1000);
 			 }
 
@@ -440,7 +440,7 @@ public class admissionPage extends PreReq {
 			 Thread.sleep(500);
 
 			 Select selstudMotherTongue = new Select(motherTongue);
-			 selstudMotherTongue.selectByVisibleText(readExcelFile(i,38));
+			 selstudMotherTongue.selectByVisibleText(readExcelFile(i,37));
 			 Thread.sleep(500);
 
 			 Select selstudRaceId = new Select(studRaceId);
@@ -449,7 +449,7 @@ public class admissionPage extends PreReq {
 
 			 studentPhoto.click();
 			 Thread.sleep(500);
-			 chooseFileStudentBtn.sendKeys(readExcelFile(i, 36));
+			 chooseFileStudentBtn.sendKeys(readExcelFile(i, 35));
 			 Thread.sleep(500);
 			 studentPhotoUploadBtn.click();
 			 Thread.sleep(5000);
@@ -498,8 +498,8 @@ public class admissionPage extends PreReq {
 			 selResidentialStatus.selectByVisibleText(readExcelFile(s, 43));
 			 Thread.sleep(500);
 
-			 postalCode.sendKeys(readExcelFile(i, 44));
-			 Thread.sleep(500);
+//			 postalCode.sendKeys(readExcelFile(i, 44));
+//			 Thread.sleep(500);
 
 			 String studentStayWithParent = "Yes";
 			 if(studentStayWithParent.equalsIgnoreCase("Yes"))
@@ -648,8 +648,11 @@ public class admissionPage extends PreReq {
 			 submitBtn.click();
 
 			}
+			
+			
 			else
 			{
+				//Changes in student attending date and some changes in address is need to be done 
 				Thread.sleep(5000);
 				driver.get(Readpropertyfile("URL"));
 				Thread.sleep(5000);
@@ -936,7 +939,7 @@ public class admissionPage extends PreReq {
 				Thread.sleep(500);
 				String dateSchoolAttending = schoolAttendingDate[0];
 				Thread.sleep(1000);
-				String monthAndYearSchoolAttending = (dateSplitStudent[1]+" "+dateSplitStudent[2]);
+				String monthAndYearSchoolAttending = (schoolAttendingDate[1]+" "+schoolAttendingDate[2]);
 				//System.out.println(monthAndYear);
 				Thread.sleep(1000);
 				String actualMonthAndYearSchoolAttending = currDate.getText();
