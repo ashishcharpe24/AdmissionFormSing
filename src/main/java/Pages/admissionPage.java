@@ -97,7 +97,7 @@ public class admissionPage extends PreReq {
 	@FindBy(xpath = "//button[normalize-space(text())='Upload']")private WebElement studentPhotoUploadBtn;
 	@FindBy(xpath = "//select[@name='SecondLang']")private WebElement secondLang;
 	@FindBy(xpath = "//select[@name='ThirdLang']")private WebElement thirdLang;
-	
+	@FindBy(xpath = "//button[normalize-space(text())='Save & Continue' and @ng-click='submitPartThree(admissionPartThree)']")private WebElement submitButtonPage3;
 	
 	@FindBy(xpath = "//select[@name='ResidentialStatus']")private WebElement residentialStatus;
 	@FindBy(xpath = "//input[@name='Block']")private WebElement block;
@@ -454,13 +454,13 @@ public class admissionPage extends PreReq {
 			 studentPhotoUploadBtn.click();
 			 Thread.sleep(5000);
 
-			 Select selSecondLang = new Select(secondLang);
-			 selSecondLang.selectByVisibleText(readExcelFile(i,45));
-			 Thread.sleep(500);
+//			 Select selSecondLang = new Select(secondLang);
+//			 selSecondLang.selectByVisibleText(readExcelFile(i,45));
+//			 Thread.sleep(500);
 
-			 Select selThirdLang = new Select(thirdLang);
-			 selThirdLang.selectByVisibleText(readExcelFile(i,46));
-			 Thread.sleep(500);
+//			 Select selThirdLang = new Select(thirdLang);
+//			 selThirdLang.selectByVisibleText(readExcelFile(i,46));
+//			 Thread.sleep(500);
 
 
 
@@ -479,7 +479,7 @@ public class admissionPage extends PreReq {
 			 //Address 
 
 			 Select selstudResidentStatus= new Select(residentialStatus);
-			 selstudResidentStatus.selectByVisibleText(readExcelFile(s, 38));
+			 selstudResidentStatus.selectByVisibleText(readExcelFile(i, 38));
 			 Thread.sleep(500);
 
 			 block.sendKeys(readExcelFile(i, 39));
@@ -493,13 +493,15 @@ public class admissionPage extends PreReq {
 
 			 city.sendKeys(readExcelFile(i, 42));
 			 Thread.sleep(500);
-
+//
 			 Select selResidentialStatus= new Select(currenthomeCountry);
 			 selResidentialStatus.selectByVisibleText(readExcelFile(s, 43));
 			 Thread.sleep(500);
+			 
+			// changing the code due to current issue in country,city and postal code that is need to be resolved.
 
-//			 postalCode.sendKeys(readExcelFile(i, 44));
-//			 Thread.sleep(500);
+			 postalCode.sendKeys(readExcelFile(i, 44));
+			 Thread.sleep(500);
 
 			 String studentStayWithParent = "Yes";
 			 if(studentStayWithParent.equalsIgnoreCase("Yes"))
@@ -617,35 +619,38 @@ public class admissionPage extends PreReq {
 			 driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
 			 Thread.sleep(500);
 			 driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
+			 Thread.sleep(500);
+
+			 submitButtonPage3.click();
 			 Thread.sleep(5000);
 
-			 String satisfactionNum = "4";
-
-			 if(satisfactionNum.equals("1"))
-			 {
-				 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[1]")).click();
-			 }
-			 else if(satisfactionNum.equals("2"))
-			 {
-				 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[2]")).click();
-			 }
-			 else if(satisfactionNum.equals("3"))
-			 {
-				 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[3]")).click();
-			 }
-			 else if(satisfactionNum.equals("4"))
-			 {
-				 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[4]")).click();
-			 }
-			 else if(satisfactionNum.equals("5"))
-			 {
-				 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[5]")).click();
-			 }
-			 //								 
-			 Thread.sleep(500);
-			 driver.findElement(By.xpath("//input[@name='AdditionalFeedback']")).sendKeys("Additional feedback test");
-			 Thread.sleep(500);
-			 submitBtn.click();
+//			 String satisfactionNum = "4";
+//
+//			 if(satisfactionNum.equals("1"))
+//			 {
+//				 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[1]")).click();
+//			 }
+//			 else if(satisfactionNum.equals("2"))
+//			 {
+//				 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[2]")).click();
+//			 }
+//			 else if(satisfactionNum.equals("3"))
+//			 {
+//				 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[3]")).click();
+//			 }
+//			 else if(satisfactionNum.equals("4"))
+//			 {
+//				 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[4]")).click();
+//			 }
+//			 else if(satisfactionNum.equals("5"))
+//			 {
+//				 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[5]")).click();
+//			 }
+//			 //								 
+//			 Thread.sleep(500);
+//			 driver.findElement(By.xpath("//input[@name='AdditionalFeedback']")).sendKeys("Additional feedback test");
+//			 Thread.sleep(500);
+//			 submitBtn.click();
 
 			}
 			

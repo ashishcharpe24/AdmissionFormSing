@@ -57,9 +57,9 @@ function toggleAllBoxes() {
 <tr>
 <td>Tests passed/Failed/Skipped:</td><td>0/1/0</td>
 </tr><tr>
-<td>Started on:</td><td>Tue Mar 21 17:38:05 IST 2023</td>
+<td>Started on:</td><td>Thu Mar 23 12:48:50 IST 2023</td>
 </tr>
-<tr><td>Total time:</td><td>163 seconds (163160 ms)</td>
+<tr><td>Total time:</td><td>156 seconds (156992 ms)</td>
 </tr><tr>
 <td>Included groups:</td><td></td>
 </tr><tr>
@@ -76,23 +76,15 @@ function toggleAllBoxes() {
 </tr>
 <tr>
 <td title='TestCases.admissionPageTest.admissionFormTest()'><b>admissionFormTest</b><br>Test class: TestCases.admissionPageTest</td>
-<td><div><pre>org.openqa.selenium.NoSuchElementException: Cannot locate option with text: Own
-For documentation on this error, please visit: https://selenium.dev/exceptions/#no_such_element
-Build info: version: &apos;4.5.3&apos;, revision: &apos;4b786a1e430&apos;
-System info: os.name: &apos;Windows 11&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;10.0&apos;, java.version: &apos;17.0.5&apos;
-Driver info: driver.version: unknown
-	at org.openqa.selenium.support.ui.Select.selectByVisibleText(Select.java:155)
-	at Pages.admissionPage.admissionForm(admissionPage.java:443)
+<td><div><pre>java.lang.NullPointerException: Cannot invoke &quot;org.apache.poi.ss.usermodel.Cell.getStringCellValue()&quot; because the return value of &quot;org.apache.poi.ss.usermodel.Row.getCell(int)&quot; is null
+	at Base.PreReq.readExcelFile(PreReq.java:65)
+	at Pages.admissionPage.admissionForm(admissionPage.java:458)
 	at TestCases.admissionPageTest.admissionFormTest(admissionPageTest.java:33)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-... Removed 27 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1472057002", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
-<div class='stack-trace' id='stack-trace1472057002'><pre>org.openqa.selenium.NoSuchElementException: Cannot locate option with text: Own
-For documentation on this error, please visit: https://selenium.dev/exceptions/#no_such_element
-Build info: version: &apos;4.5.3&apos;, revision: &apos;4b786a1e430&apos;
-System info: os.name: &apos;Windows 11&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;10.0&apos;, java.version: &apos;17.0.5&apos;
-Driver info: driver.version: unknown
-	at org.openqa.selenium.support.ui.Select.selectByVisibleText(Select.java:155)
-	at Pages.admissionPage.admissionForm(admissionPage.java:443)
+... Removed 27 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace904300960", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace904300960'><pre>java.lang.NullPointerException: Cannot invoke &quot;org.apache.poi.ss.usermodel.Cell.getStringCellValue()&quot; because the return value of &quot;org.apache.poi.ss.usermodel.Row.getCell(int)&quot; is null
+	at Base.PreReq.readExcelFile(PreReq.java:65)
+	at Pages.admissionPage.admissionForm(admissionPage.java:458)
 	at TestCases.admissionPageTest.admissionFormTest(admissionPageTest.java:33)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
@@ -123,7 +115,7 @@ Driver info: driver.version: unknown
 	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
 	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
 </pre></div></td>
-<td>157</td>
+<td>151</td>
 <td>TestCases.admissionPageTest@82de64a</td></tr>
 </table><p>
 </body>
