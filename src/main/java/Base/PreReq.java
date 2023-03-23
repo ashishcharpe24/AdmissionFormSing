@@ -18,7 +18,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class PreReq {
 	public static WebDriver driver;
-	
+	//
 
 	public String Readpropertyfile(String value) throws IOException
 	{
