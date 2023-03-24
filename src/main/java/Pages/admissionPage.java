@@ -183,7 +183,6 @@ public class admissionPage extends PreReq {
 		Thread.sleep(1000);
 		while(!monthAndYear.equals(actualMonthAndYear))
 		{
-			System.out.println("while loop");
 			driver.findElement(By.xpath("//i[@class='glyphicon glyphicon-chevron-left']")).click();
 			Thread.sleep(500);
 			actualMonthAndYear=currDate.getText();
@@ -689,7 +688,6 @@ public class admissionPage extends PreReq {
 			Thread.sleep(1000);
 			while(!monthAndYear.equals(actualMonthAndYear))
 			{
-				System.out.println("while loop");
 				driver.findElement(By.xpath("//i[@class='glyphicon glyphicon-chevron-left']")).click();
 				Thread.sleep(500);
 				actualMonthAndYear=currDate.getText();
