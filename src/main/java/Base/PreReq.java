@@ -19,7 +19,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class PreReq {
 	public static WebDriver driver;
 	//
-
+	
 	public String Readpropertyfile(String value) throws IOException
 	{
 		FileInputStream file = new FileInputStream("C:\\Users\\acharpe\\Downloads\\AdmissionFormSingapore-main\\AdmissionFormSingapore-main\\Configuration.properties");
@@ -53,7 +53,7 @@ public class PreReq {
 		
 		driver.manage().deleteAllCookies();
 		driver.manage().window().maximize();
-		driver.get(Readpropertyfile("URL"));
+//		driver.get(Readpropertyfile("URL"));
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		
 	}

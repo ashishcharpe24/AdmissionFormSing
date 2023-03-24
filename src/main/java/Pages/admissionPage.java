@@ -4,17 +4,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
-import com.fasterxml.jackson.databind.deser.Deserializers.Base;
 
 import Base.PreReq;
 
@@ -33,6 +30,10 @@ public class admissionPage extends PreReq {
 	@FindBy(xpath = "//button[@id='SaveAndContinueButtonPageOne']")private WebElement saveAndContBtn;
 	
 	//Page2
+	@FindBy(xpath = "(//input[@id='FatherFirstName'])[2]")private WebElement fatherFirstName;
+	@FindBy(xpath = "(//input[@name='FatherLastName'])[2]")private WebElement fatherLastName;
+	@FindBy(xpath = "(//input[@name='FatherEmailAddress'])[2]")private WebElement fatherEmail;
+	@FindBy(xpath = "(//input[@name='FatherhMobileNumber'])[2]")private WebElement fatherMobileNum;
 	@FindBy(xpath = "(//i[@class='glyphicon glyphicon-calendar'])[1]")private WebElement calendarBtn;
 	@FindBy(xpath = "//strong[@class='ng-binding']")private WebElement currDate;
 	@FindBy(xpath = "//select[@name='FatherIdentification']")private WebElement fatherID;
@@ -110,29 +111,36 @@ public class admissionPage extends PreReq {
 	//Page4
 	@FindBy(xpath = "//button[normalize-space(text())='Submit']")private WebElement submitBtn;
 	
+	public static int numberOfStud ;
+	
+	
 	public admissionPage()
 	{
 		PageFactory.initElements(driver, this);
 	}
 	
-	
 	public void admissionForm() throws InterruptedException, IOException
 	{
-		String str = Readpropertyfile("NumberOfStudents");
-		int s = 0;
-		try{
-			  s = Integer.parseInt(str);
-		}
-		catch (NumberFormatException ex){
-			ex.printStackTrace();
-		}
+		FileInputStream file = new FileInputStream("C:\\Users\\acharpe\\Downloads\\AdmissionFormSingapore-main\\AdmissionFormSingapore-main\\TestData\\StudentListForSingEC (1).xlsx");
+		Sheet data = WorkbookFactory.create(file).getSheet("Sheet1");
+		numberOfStud=data.getLastRowNum();
 		
-		for(int i=1;i<=s;i++)
-		{
-			if(i==1)
-			{
-				
+		System.out.println(numberOfStud);
+		
+		for(int i=1;i<=numberOfStud;i++)
+	   {
 		Thread.sleep(5000);
+		driver.get(Readpropertyfile("URL"));		
+		Thread.sleep(5000);
+		String parent=readExcelFile(i, 4);
+		if(parent.equalsIgnoreCase("Father"))
+		{
+		
+		Thread.sleep(500);
+		
+		fatherRadBtn.click();
+	
+		
 		Select conSel = new Select(country);
 		//conSel.selectByVisibleText("Singapore");
 		conSel.selectByVisibleText(Readpropertyfile("Country"));
@@ -152,18 +160,7 @@ public class admissionPage extends PreReq {
 		Thread.sleep(500);
 		mobNum.sendKeys(readExcelFile(i, 3));
 		Thread.sleep(500);
-		String parent=readExcelFile(i, 4);
-		Thread.sleep(500);
-		if(parent.equalsIgnoreCase("Father"))
-		{
-			fatherRadBtn.click();
-		}
-		else if(parent.equalsIgnoreCase("Mother"))
-		{
-			motherRadBtn.click();
-		}
 		
-		Thread.sleep(500);
 		saveAndContBtn.click();
 		Thread.sleep(10000);
 	
@@ -463,19 +460,6 @@ public class admissionPage extends PreReq {
 //			 Thread.sleep(500);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 			 //Address 
 
 			 Select selstudResidentStatus= new Select(residentialStatus);
@@ -495,7 +479,7 @@ public class admissionPage extends PreReq {
 			 Thread.sleep(500);
 //
 			 Select selResidentialStatus= new Select(currenthomeCountry);
-			 selResidentialStatus.selectByVisibleText(readExcelFile(s, 43));
+			 selResidentialStatus.selectByVisibleText(readExcelFile(i, 43));
 			 Thread.sleep(500);
 			 
 			// changing the code due to current issue in country,city and postal code that is need to be resolved.
@@ -653,121 +637,117 @@ public class admissionPage extends PreReq {
 //			 submitBtn.click();
 
 			}
+//		Mother priority parent
+		else if(parent.equalsIgnoreCase("Mother"))
+		{
+			Thread.sleep(500);
+			motherRadBtn.click();
+			Select conSel = new Select(country);
+			//conSel.selectByVisibleText("Singapore");
+			conSel.selectByVisibleText(Readpropertyfile("Country"));
+			Thread.sleep(500);
+			Select camSel = new Select(Campus);
+			//camSel.selectByVisibleText("East Coast");
+			camSel.selectByVisibleText(Readpropertyfile("Campus"));
+			Thread.sleep(500);
+			Select admSel = new Select(AdmissionFor);
+			admSel.selectByVisibleText("2022-2023");
+			Thread.sleep(500);
+			firstName.sendKeys(readExcelFile(i, 0));
+			Thread.sleep(500);
+			lastName.sendKeys(readExcelFile(i, 1));
+			Thread.sleep(500);
+			eMail.sendKeys(readExcelFile(i, 2));
+			Thread.sleep(500);
+			mobNum.sendKeys(readExcelFile(i, 3));
+			Thread.sleep(500);
 			
+			saveAndContBtn.click();
+			Thread.sleep(10000);
+		
 			
-			else
+			//Page 2
+			
+			fatherFirstName.sendKeys(readExcelFile(i, 12));
+			Thread.sleep(500);
+			fatherLastName.sendKeys(readExcelFile(i, 13));
+			Thread.sleep(500);
+			
+			calendarBtn.click();
+			Thread.sleep(500);
+			String dateOfBirthFather = readExcelFile(i, 5);
+			Thread.sleep(500);
+			String[] dateSplit =  dateOfBirthFather.split("-");
+			Thread.sleep(500);
+			String date = dateSplit[0];
+			Thread.sleep(1000);
+			String monthAndYear = (dateSplit[1]+" "+dateSplit[2]);
+			//System.out.println(monthAndYear);
+			Thread.sleep(1000);
+			String actualMonthAndYear = currDate.getText();
+			//System.out.println(actualMonthAndYear);
+			Thread.sleep(1000);
+			while(!monthAndYear.equals(actualMonthAndYear))
 			{
-				//Changes in student attending date and some changes in address is need to be done 
-				Thread.sleep(5000);
-				driver.get(Readpropertyfile("URL"));
-				Thread.sleep(5000);
-				Select conSel = new Select(country);
-				conSel.selectByVisibleText("Singapore");
+				System.out.println("while loop");
+				driver.findElement(By.xpath("//i[@class='glyphicon glyphicon-chevron-left']")).click();
 				Thread.sleep(500);
-				Select camSel = new Select(Campus);
-				camSel.selectByVisibleText("East Coast");
+				actualMonthAndYear=currDate.getText();
 				Thread.sleep(500);
-				Select admSel = new Select(AdmissionFor);
-				admSel.selectByVisibleText("2022-2023");
-				Thread.sleep(500);
-				firstName.sendKeys(readExcelFile(i, 0));
-				Thread.sleep(500);
-				lastName.sendKeys(readExcelFile(i, 1));
-				Thread.sleep(500);
-				eMail.sendKeys(readExcelFile(i, 2));
-				Thread.sleep(500);
-				mobNum.sendKeys(readExcelFile(i, 3));
-				Thread.sleep(500);
-				String parent=readExcelFile(i, 4);
-				Thread.sleep(500);
-				if(parent.equalsIgnoreCase("Father"))
-				{
-					fatherRadBtn.click();
-				}
-				else if(parent.equalsIgnoreCase("Mother"))
-				{
-					motherRadBtn.click();
-				}
-
-				Thread.sleep(500);
-				saveAndContBtn.click();
-				Thread.sleep(10000);
-
-
-				//Page 2
-
-				calendarBtn.click();
-				Thread.sleep(500);
-				String dateOfBirthFather = readExcelFile(i, 5);
-				Thread.sleep(500);
-				String[] dateSplit =  dateOfBirthFather.split("-");
-				Thread.sleep(500);
-				String date = dateSplit[0];
-				Thread.sleep(1000);
-				String monthAndYear = (dateSplit[1]+" "+dateSplit[2]);
-				//System.out.println(monthAndYear);
-				Thread.sleep(1000);
-				String actualMonthAndYear = currDate.getText();
-				//System.out.println(actualMonthAndYear);
-				Thread.sleep(1000);
-				while(!monthAndYear.equals(actualMonthAndYear))
-				{
-					System.out.println("while loop");
-					driver.findElement(By.xpath("//i[@class='glyphicon glyphicon-chevron-left']")).click();
-					Thread.sleep(500);
-					actualMonthAndYear=currDate.getText();
-					Thread.sleep(500);
-				}
-
-				WebElement expDate=driver.findElement(By.xpath("//button//span[@class='ng-binding' and text()='"+date+"']"));
-				expDate.click();
-				Thread.sleep(500);
-
-				Select selNationality = new Select(fatherNationality);
-				selNationality.selectByVisibleText(readExcelFile(i, 6));
-
-				Select selID = new Select(fatherID);
-				selID.selectByVisibleText(readExcelFile(i, 7));
-				Thread.sleep(500);
-				fatherIDNum.sendKeys(readExcelFile(i, 8));
-				Thread.sleep(500);
-				Select selEdu = new Select(fatherEducation);
-				selEdu.selectByVisibleText("B.Tech");
-				Thread.sleep(500);
-				Select selAnualInc = new Select(fatherAnnualIncm);
-				selAnualInc.selectByVisibleText("80k-140k(SGD)");
-				Thread.sleep(500);
-				fatherEmployerName.sendKeys(readExcelFile(i, 9));
-				Thread.sleep(500);
-				fatherExp.sendKeys("4");
-				Thread.sleep(500);
-				Select selcurrPosition = new Select(FatherCurrentPosition);
-				selcurrPosition.selectByVisibleText("Technical Consultant");
-				Thread.sleep(500);
-				Select selmaritalStatus = new Select(fatherMaritalStatus);
-				selmaritalStatus.selectByVisibleText("Married");
-				Thread.sleep(500);
-				fatherhHomeNumber.sendKeys(readExcelFile(i, 10));
-				Thread.sleep(500);
-				Select selsocioEco = new Select(fatherthSocioEconomic);
-				selsocioEco.selectByVisibleText("Graduate-Service");
-				Thread.sleep(500);
-				fatherPhotoUpload.click();
-				Thread.sleep(500);
-				chooseFileBtn.sendKeys(readExcelFile(i, 11));
-				Thread.sleep(5000);
-				uploadBtn.click();
-				Thread.sleep(5000);
-
-
-				//Mother Details
-				motherFirstName.sendKeys(readExcelFile(i, 12));
-				Thread.sleep(500);
-				motherLastName.sendKeys(readExcelFile(i, 13));
-				Thread.sleep(500);
-				motherDOBCalBtn.click();
-				Thread.sleep(500);
-				String dateOfBirthMother = readExcelFile(i, 14);
+			}
+			
+			WebElement expDate=driver.findElement(By.xpath("//button//span[@class='ng-binding' and text()='"+date+"']"));
+			 expDate.click();
+			 Thread.sleep(500);
+			 
+			fatherMobileNum.sendKeys(readExcelFile(i, 20));
+			Thread.sleep(500);
+			fatherEmail.sendKeys(readExcelFile(i, 19));
+			Thread.sleep(500);
+			 
+			 Select selNationality = new Select(fatherNationality);
+			 selNationality.selectByVisibleText(readExcelFile(i, 6));
+			 
+			 Select selID = new Select(fatherID);
+			 selID.selectByVisibleText(readExcelFile(i, 7));
+			 Thread.sleep(500);
+			 fatherIDNum.sendKeys(readExcelFile(i, 8));
+			 Thread.sleep(500);
+			 Select selEdu = new Select(fatherEducation);
+			 selEdu.selectByVisibleText("B.Tech");
+			 Thread.sleep(500);
+			 Select selAnualInc = new Select(fatherAnnualIncm);
+			// selAnualInc.selectByVisibleText("80k-140k(SGD)");
+			 selAnualInc.selectByIndex(2);
+			 Thread.sleep(500);
+			 fatherEmployerName.sendKeys(readExcelFile(i, 9));
+			 Thread.sleep(500);
+			 fatherExp.sendKeys("4");
+			 Thread.sleep(500);
+			 Select selcurrPosition = new Select(FatherCurrentPosition);
+			 selcurrPosition.selectByVisibleText("Technical Consultant");
+			 Thread.sleep(500);
+			 Select selmaritalStatus = new Select(fatherMaritalStatus);
+			 selmaritalStatus.selectByVisibleText("Married");
+			 Thread.sleep(500);
+			 fatherhHomeNumber.sendKeys(readExcelFile(i, 10));
+			 Thread.sleep(500);
+			 Select selsocioEco = new Select(fatherthSocioEconomic);
+			 selsocioEco.selectByVisibleText("Graduate-Service");
+			 Thread.sleep(500);
+			 fatherPhotoUpload.click();
+			 Thread.sleep(500);
+			 chooseFileBtn.sendKeys(readExcelFile(i, 11));
+			 Thread.sleep(5000);
+			 uploadBtn.click();
+			 Thread.sleep(5000);
+			 
+			 
+			 //Mother Details
+			 Thread.sleep(500);
+			 motherDOBCalBtn.click();
+			 Thread.sleep(500);
+			 String dateOfBirthMother = readExcelFile(i, 14);
 				Thread.sleep(500);
 				String[] dateSplitMother =  dateOfBirthMother.split("-");
 				Thread.sleep(500);
@@ -781,384 +761,387 @@ public class admissionPage extends PreReq {
 				Thread.sleep(1000);
 				while(!monthAndYearMother.equals(actualMonthAndYearMother))
 				{
-
+					
 					driver.findElement(By.xpath("//i[@class='glyphicon glyphicon-chevron-left']")).click();
 					Thread.sleep(1000);
 					actualMonthAndYearMother=currDate.getText();
 					Thread.sleep(1000);
 				}
-
+				
 				WebElement expDateMother=driver.findElement(By.xpath("//button//span[@class='ng-binding' and text()='"+dateMother+"']"));
 				expDateMother.click();
 				Thread.sleep(500);
-
-				Select selNationalityMother = new Select(motherNationality);
-				selNationalityMother.selectByVisibleText(readExcelFile(i, 15));
-				Thread.sleep(500);
-
-				Select selIdMother = new Select(motherID);
-				selIdMother.selectByVisibleText(readExcelFile(i, 16));
-				Thread.sleep(500);
-
-				MotherIdentificationNumber.sendKeys(readExcelFile(i, 17));
-
-				Select selEduMother  = new Select(motherEducation);
-				selEduMother .selectByVisibleText("B.Tech");
-				Thread.sleep(500);
-
-				Select selAnualIncMother  = new Select(motherAnnualIncome);
-				selAnualIncMother .selectByVisibleText("80k-140k(SGD)");
-				Thread.sleep(500);
-
-				motherEmployerName.sendKeys(readExcelFile(i, 18));
-				Thread.sleep(500);
-
-				mthExp.sendKeys("2");
-				Thread.sleep(500);
-
-				Select selcurrPositionMother  = new Select(motherCurrentPosition);
-				selcurrPositionMother .selectByVisibleText("Consultant");
-				Thread.sleep(500);
-
-				Select selmaritalStatusMother = new Select(motherMaritalStatus);
-				selmaritalStatusMother.selectByVisibleText("Married");
-				Thread.sleep(500);
-
-				motherEmail.sendKeys(readExcelFile(i, 19));
-				Thread.sleep(500);
-
-				motherMobileNum.sendKeys(readExcelFile(i, 20));
-				Thread.sleep(500);
-
-				motherHomeNum.sendKeys(readExcelFile(i, 21));
-				Thread.sleep(500);
-
-				Select selSocioEcnmMother = new Select(motherSocioEcnm);
-				selSocioEcnmMother.selectByVisibleText("Graduate-Service");
-				Thread.sleep(500);
-
-				motherPhotoUpload.click();
-				Thread.sleep(500);
-				chooseFileMotherBtn.sendKeys(readExcelFile(i, 22));
-				Thread.sleep(500);
-				uploadMBtn.click();
-				Thread.sleep(3000);
-				saveAndContMBtn.click();
-				Thread.sleep(5000);
-
-
-				// Page3 Student Info 
-
-				studentFirstName.sendKeys(readExcelFile(i, 23));
-				Thread.sleep(500);
-				studentLastName.sendKeys(readExcelFile(i, 24));
-				Thread.sleep(500);
-				calendarBtnStudent.click();
-				Thread.sleep(500);
-				String dateOfBirthStudent = readExcelFile(i, 25);
-				Thread.sleep(500);
-				String[] dateSplitStudent =  dateOfBirthStudent.split("-");
-				Thread.sleep(500);
-				String dateStudent = dateSplitStudent[0];
-				Thread.sleep(1000);
-				String monthAndYearStudent = (dateSplitStudent[1]+" "+dateSplitStudent[2]);
-				//System.out.println(monthAndYear);
-				Thread.sleep(1000);
-				String actualMonthAndYearStudent = currDate.getText();
-				//System.out.println(actualMonthAndYear);
-				Thread.sleep(1000);
-				while(!monthAndYearStudent.equals(actualMonthAndYearStudent))
-				{
-
-					driver.findElement(By.xpath("//i[@class='glyphicon glyphicon-chevron-left']")).click();
-					Thread.sleep(1000);
-					actualMonthAndYearStudent=currDate.getText();
-					Thread.sleep(1000);
-				}
-
-				WebElement expDateStudent=driver.findElement(By.xpath("//button//span[@class='ng-binding' and text()='"+dateStudent+"']"));
-				expDateStudent.click();
-				Thread.sleep(500);
-
-				String gender=readExcelFile(i, 26);
-				if(gender.equalsIgnoreCase("Male"))
-				{
-					genderMaleStudent.click();
-				}
-				else if(gender.equalsIgnoreCase("Female"))
-				{
-					genderFemaleStudent.click();
-				}
-
-				phoneNumStudent.sendKeys(readExcelFile(i, 27));
-				Thread.sleep(500);
-
-				Select selStudID = new Select(studentIDType);
-				selStudID.selectByVisibleText(readExcelFile(i, 28));
-				Thread.sleep(500);
-
-				studentIdNum.sendKeys(readExcelFile(i, 29));
-				Thread.sleep(500);
-
-				Select selStudNationality = new Select(studentNationality);
-				selStudNationality.selectByVisibleText(readExcelFile(i, 30));
-				Thread.sleep(500);
-
-				studentBirthPlace.sendKeys(readExcelFile(i, 31));
-				Thread.sleep(500);
-
-				Select selStudBirthCountry = new Select(studentBirthCountry);
-				selStudBirthCountry.selectByVisibleText(readExcelFile(i, 32));
-				Thread.sleep(500);
-
-				Select selstudSeekingAdmiss = new Select(studentSeekingAdmInClss);
-				//						//selstudSeekingAdmiss.selectByVisibleText(adf.readProprtyFile("ClassToTakeAdmissionIn"));
-				selstudSeekingAdmiss.selectByVisibleText(readExcelFile(i, 33));
-				Thread.sleep(500);
-
-				Select selstudCurrClass = new Select(currentClass);
-				selstudCurrClass.selectByVisibleText(readExcelFile(i, 34));
-				Thread.sleep(500);
-
-				presentSchoolName.sendKeys("Pre School");
-				Thread.sleep(500);
-
-				presentSchoolCity.sendKeys(readExcelFile(i,42));
-				Thread.sleep(500);
-
-				presentSchoolCountry.sendKeys(readExcelFile(i,43));
-				Thread.sleep(500);
-
-				Select selstudCurrentSchoolCountry = new Select(presentSchoolCountry);
-				selstudCurrentSchoolCountry.selectByVisibleText(readExcelFile(i,43));
-				Thread.sleep(500);
-
-				Select selstudBloodGrp = new Select(bloodGroup);
-				selstudBloodGrp.selectByVisibleText("B+");
-				Thread.sleep(500);
-
-				schoolAttendinDateCalBtn.click();
-				String schoolAttendingDateExcel = readExcelFile(i, 36);
-				Thread.sleep(500);
-				String[] schoolAttendingDate =  schoolAttendingDateExcel.split("-");
-				Thread.sleep(500);
-				String dateSchoolAttending = schoolAttendingDate[0];
-				Thread.sleep(1000);
-				String monthAndYearSchoolAttending = (schoolAttendingDate[1]+" "+schoolAttendingDate[2]);
-				//System.out.println(monthAndYear);
-				Thread.sleep(1000);
-				String actualMonthAndYearSchoolAttending = currDate.getText();
-				//System.out.println(actualMonthAndYear);
-				Thread.sleep(1000);
-				while(!monthAndYearSchoolAttending.equals(actualMonthAndYearSchoolAttending))
-				{
-
-					driver.findElement(By.xpath("//i[@class='glyphicon glyphicon-chevron-right']")).click();
-					Thread.sleep(1000);
-					actualMonthAndYearSchoolAttending=currDate.getText();
-					Thread.sleep(1000);
-				}
-
-				WebElement expSchoolAttendingDate=driver.findElement(By.xpath("//button//span[@class='ng-binding' and text()='"+dateSchoolAttending+"']"));
-				expSchoolAttendingDate.click();
-				Thread.sleep(500);
-
-				Select selstudMotherTongue = new Select(motherTongue);
-				selstudMotherTongue.selectByVisibleText(readExcelFile(i,37));
-				Thread.sleep(500);
-
-				Select selstudRaceId = new Select(studRaceId);
-				selstudRaceId.selectByVisibleText(readExcelFile(i,30));
-				Thread.sleep(500);
-
-				studentPhoto.click();
-				Thread.sleep(500);
-				chooseFileStudentBtn.sendKeys(readExcelFile(i, 35));
-				Thread.sleep(500);
-				studentPhotoUploadBtn.click();
-				Thread.sleep(5000);
-
-				Select selSecondLang = new Select(secondLang);
-				selSecondLang.selectByVisibleText(readExcelFile(i,45));
-				Thread.sleep(500);
-
-				Select selThirdLang = new Select(thirdLang);
-				selThirdLang.selectByVisibleText(readExcelFile(i,46));
-				Thread.sleep(500);
-
 				
-				//Address 
+				 Select selNationalityMother = new Select(motherNationality);
+				 selNationalityMother.selectByVisibleText(readExcelFile(i, 15));
+				 Thread.sleep(500);
+				 
+				 Select selIdMother = new Select(motherID);
+				 selIdMother.selectByVisibleText(readExcelFile(i, 16));
+				 Thread.sleep(500);
+				 
+				 MotherIdentificationNumber.sendKeys(readExcelFile(i, 17));
+				 
+				 Select selEduMother  = new Select(motherEducation);
+				 selEduMother .selectByVisibleText("B.Tech");
+				 Thread.sleep(500);
+				 
+				 Select selAnualIncMother  = new Select(motherAnnualIncome);
+//				 selAnualIncMother .selectByVisibleText("80k-140k(SGD)");
+				 selAnualIncMother.selectByIndex(2);
+				 Thread.sleep(500);
+				 
+				 motherEmployerName.sendKeys(readExcelFile(i, 18));
+				 Thread.sleep(500);
+				 
+				 mthExp.sendKeys("2");
+				 Thread.sleep(500);
+				 
+				 Select selcurrPositionMother  = new Select(motherCurrentPosition);
+				 selcurrPositionMother .selectByVisibleText("Consultant");
+				 Thread.sleep(500);
+				 
+				 Select selmaritalStatusMother = new Select(motherMaritalStatus);
+				 selmaritalStatusMother.selectByVisibleText("Married");
+				 Thread.sleep(500);
+				 
+				 
+				 motherHomeNum.sendKeys(readExcelFile(i, 21));
+				 Thread.sleep(500);
+				 
+				 Select selSocioEcnmMother = new Select(motherSocioEcnm);
+				 selSocioEcnmMother.selectByVisibleText("Graduate-Service");
+				 Thread.sleep(500);
+				 
+				 motherPhotoUpload.click();
+				 Thread.sleep(500);
+				 chooseFileMotherBtn.sendKeys(readExcelFile(i, 22));
+				 Thread.sleep(500);
+				 uploadMBtn.click();
+				 Thread.sleep(3000);
+				 saveAndContMBtn.click();
+				 Thread.sleep(5000);
+				 
+				
+				 // Page3 Student Info 
+				 
+				 studentFirstName.sendKeys(readExcelFile(i, 23));
+				 Thread.sleep(500);
+				 studentLastName.sendKeys(readExcelFile(i, 24));
+				 Thread.sleep(500);
+				 calendarBtnStudent.click();
+				 Thread.sleep(500);
+				 String dateOfBirthStudent = readExcelFile(i, 25);
+				 Thread.sleep(500);
+				 String[] dateSplitStudent =  dateOfBirthStudent.split("-");
+				 Thread.sleep(500);
+				 String dateStudent = dateSplitStudent[0];
+				 Thread.sleep(1000);
+				 String monthAndYearStudent = (dateSplitStudent[1]+" "+dateSplitStudent[2]);
+				 //System.out.println(monthAndYear);
+				 Thread.sleep(1000);
+				 String actualMonthAndYearStudent = currDate.getText();
+				 //System.out.println(actualMonthAndYear);
+				 Thread.sleep(1000);
+				 while(!monthAndYearStudent.equals(actualMonthAndYearStudent))
+				 {
 
-				Select selstudResidentStatus= new Select(residentialStatus);
-				selstudResidentStatus.selectByVisibleText(readExcelFile(s, 38));
-				Thread.sleep(500);
+					 driver.findElement(By.xpath("//i[@class='glyphicon glyphicon-chevron-left']")).click();
+					 Thread.sleep(1000);
+					 actualMonthAndYearStudent=currDate.getText();
+					 Thread.sleep(1000);
+				 }
 
-				block.sendKeys(readExcelFile(i, 39));
-				Thread.sleep(500);
+				 WebElement expDateStudent=driver.findElement(By.xpath("//button//span[@class='ng-binding' and text()='"+dateStudent+"']"));
+				 expDateStudent.click();
+				 Thread.sleep(500);
 
-				addressline1.sendKeys(readExcelFile(i, 40));
-				Thread.sleep(500);
+				 String gender=readExcelFile(i, 26);
+				 if(gender.equalsIgnoreCase("Male"))
+				 {
+					 genderMaleStudent.click();
+				 }
+				 else if(gender.equalsIgnoreCase("Female"))
+				 {
+					 genderFemaleStudent.click();
+				 }
 
-				addressline2.sendKeys(readExcelFile(i, 41));
-				Thread.sleep(500);
+				 phoneNumStudent.sendKeys(readExcelFile(i, 27));
+				 Thread.sleep(500);
 
-				city.sendKeys(readExcelFile(i, 42));
-				Thread.sleep(500);
+				 Select selStudID = new Select(studentIDType);
+				 selStudID.selectByVisibleText(readExcelFile(i, 28));
+				 Thread.sleep(500);
 
-				Select selResidentialStatus= new Select(currenthomeCountry);
-				selResidentialStatus.selectByVisibleText(readExcelFile(s, 43));
-				Thread.sleep(500);
+				 studentIdNum.sendKeys(readExcelFile(i, 29));
+				 Thread.sleep(500);
 
-				postalCode.sendKeys(readExcelFile(i, 44));
-				Thread.sleep(500);
+				 Select selStudNationality = new Select(studentNationality);
+				 selStudNationality.selectByVisibleText(readExcelFile(i, 30));
+				 Thread.sleep(500);
 
-				String studentStayWithParent = "Yes";
-				if(studentStayWithParent.equalsIgnoreCase("Yes"))
-				{
-					driver.findElement(By.xpath("(//input[@name='StudentStayWithParent'])[1]")).click();
+				 studentBirthPlace.sendKeys(readExcelFile(i, 31));
+				 Thread.sleep(500);
+
+				 Select selStudBirthCountry = new Select(studentBirthCountry);
+				 selStudBirthCountry.selectByVisibleText(readExcelFile(i, 32));
+				 Thread.sleep(500);
+
+				 Select selstudSeekingAdmiss = new Select(studentSeekingAdmInClss);
+				 //				//selstudSeekingAdmiss.selectByVisibleText(adf.readProprtyFile("ClassToTakeAdmissionIn"));
+				 selstudSeekingAdmiss.selectByVisibleText(readExcelFile(i, 33));
+				 Thread.sleep(500);
+
+				 Select selstudCurrClass = new Select(currentClass);
+				 selstudCurrClass.selectByVisibleText(readExcelFile(i, 34));
+				 Thread.sleep(500);
+
+				 presentSchoolName.sendKeys("Pre School");
+				 Thread.sleep(500);
+
+				 presentSchoolCity.sendKeys(readExcelFile(i,42));
+				 Thread.sleep(500);
+
+				 presentSchoolCountry.sendKeys(readExcelFile(i,43));
+				 Thread.sleep(500);
+
+				 Select selstudCurrentSchoolCountry = new Select(presentSchoolCountry);
+				 selstudCurrentSchoolCountry.selectByVisibleText(readExcelFile(i,43));
+				 Thread.sleep(500);
+
+				 Select selstudBloodGrp = new Select(bloodGroup);
+				 selstudBloodGrp.selectByVisibleText("B+");
+				 Thread.sleep(500);
+
+				 schoolAttendinDateCalBtn.click();
+				 String schoolAttendingDateExcel = readExcelFile(i, 36);
+				 Thread.sleep(500);
+				 String[] schoolAttendingDate =  schoolAttendingDateExcel.split("-");
+				 Thread.sleep(500);
+				 String dateSchoolAttending = schoolAttendingDate[0];
+				 Thread.sleep(1000);
+				 String monthAndYearSchoolAttending = (schoolAttendingDate[1]+" "+schoolAttendingDate[2]);
+				 //System.out.println(monthAndYear);
+				 Thread.sleep(1000);
+				 String actualMonthAndYearSchoolAttending = currDate.getText();
+				 //System.out.println(actualMonthAndYear);
+				 Thread.sleep(1000);
+				 while(!monthAndYearSchoolAttending.equals(actualMonthAndYearSchoolAttending))
+				 {
+
+					 driver.findElement(By.xpath("//i[@class='glyphicon glyphicon-chevron-right']")).click();
+					 Thread.sleep(1000);
+					 actualMonthAndYearSchoolAttending=currDate.getText();
+					 Thread.sleep(1000);
+				 }
+
+				 WebElement expSchoolAttendingDate=driver.findElement(By.xpath("//button//span[@class='ng-binding' and text()='"+dateSchoolAttending+"']"));
+				 expSchoolAttendingDate.click();
+				 Thread.sleep(500);
+
+				 Select selstudMotherTongue = new Select(motherTongue);
+				 selstudMotherTongue.selectByVisibleText(readExcelFile(i,37));
+				 Thread.sleep(500);
+
+				 Select selstudRaceId = new Select(studRaceId);
+				 selstudRaceId.selectByVisibleText(readExcelFile(i,30));
+				 Thread.sleep(500);
+
+				 studentPhoto.click();
+				 Thread.sleep(500);
+				 chooseFileStudentBtn.sendKeys(readExcelFile(i, 35));
+				 Thread.sleep(500);
+				 studentPhotoUploadBtn.click();
+				 Thread.sleep(5000);
+
+//				 Select selSecondLang = new Select(secondLang);
+//				 selSecondLang.selectByVisibleText(readExcelFile(i,45));
+//				 Thread.sleep(500);
+
+//				 Select selThirdLang = new Select(thirdLang);
+//				 selThirdLang.selectByVisibleText(readExcelFile(i,46));
+//				 Thread.sleep(500);
+
+
+				 //Address 
+
+				 Select selstudResidentStatus= new Select(residentialStatus);
+				 selstudResidentStatus.selectByVisibleText(readExcelFile(i, 38));
+				 Thread.sleep(500);
+
+				 block.sendKeys(readExcelFile(i, 39));
+				 Thread.sleep(500);
+
+				 addressline1.sendKeys(readExcelFile(i, 40));
+				 Thread.sleep(500);
+
+				 addressline2.sendKeys(readExcelFile(i, 41));
+				 Thread.sleep(500);
+
+				 city.sendKeys(readExcelFile(i, 42));
+				 Thread.sleep(500);
+	//
+				 Select selResidentialStatus= new Select(currenthomeCountry);
+				 selResidentialStatus.selectByVisibleText(readExcelFile(i, 43));
+				 Thread.sleep(500);
+				 
+				// changing the code due to current issue in country,city and postal code that is need to be resolved.
+
+				 postalCode.sendKeys(readExcelFile(i, 44));
+				 Thread.sleep(500);
+
+				 String studentStayWithParent = "Yes";
+				 if(studentStayWithParent.equalsIgnoreCase("Yes"))
+				 {
+					 driver.findElement(By.xpath("(//input[@name='StudentStayWithParent'])[1]")).click();
+				 }
+				 else
+				 {
+					 driver.findElement(By.xpath("(//input[@name='StudentStayWithParent'])[2]")).click();
+				 }
+
+				 Thread.sleep(500);
+
+				 driver.findElement(By.xpath("//input[@name='SibName']")).sendKeys("TestSibTestZZZ");
+				 //				
+				 driver.findElement(By.xpath("(//i[@class='glyphicon glyphicon-calendar'])[5]")).click();
+				 Thread.sleep(500);
+				 driver.findElement(By.xpath("//button[text()='Today']")).click();
+				 driver.findElement(By.xpath("//input[@name='SibPrestSchlName']")).sendKeys("SiblingPresentSchool");
+				 Thread.sleep(500);
+
+				 saveAndContinueBtn.click();
+				 Thread.sleep(5000);
+
+
+				 // Page4
+
+				 Thread.sleep(15000);
+				 WebElement medicalConditionNo = driver.findElement(By.xpath("//input[@name='OptionSelected_1'][2]"));
+				 medicalConditionNo.click();
+
+
+				 WebElement hearingSpeechNo = driver.findElement(By.xpath("//input[@name='OptionSelected_2'][2]"));
+				 hearingSpeechNo.click();
+
+
+				 WebElement specialNeedNo = driver.findElement(By.xpath("//input[@name='OptionSelected_3'][2]"));
+				 specialNeedNo.click();
+
+				 WebElement behaviouralDiffNo = driver.findElement(By.xpath("//input[@name='OptionSelected_4'][2]"));
+				 behaviouralDiffNo.click();
+
+
+				 WebElement anyOtherNo = driver.findElement(By.xpath("//input[@name='OptionSelected_5'][2]"));
+				 anyOtherNo.click();
+
+				 String pickUp = "Bus";//
+
+				 if(pickUp.equalsIgnoreCase("Bus"))
+				 {
+					 driver.findElement(By.xpath("//input[@value='School Bus']")).click();
+				 }
+				 else if(pickUp.equalsIgnoreCase("Mother"))
+				 {
+					 driver.findElement(By.xpath("//input[@value='Mother']")).click();
+				 }
+				 else if(pickUp.equalsIgnoreCase("Father"))
+				 {
+					 driver.findElement(By.xpath("//input[@value='Father']")).click();
+				 }
+				 else if(pickUp.equalsIgnoreCase("Another Individual"))
+				 {
+					 driver.findElement(By.xpath("//input[@value='Another Individual']")).click();
+				 }
+
+				 Thread.sleep(500);
+				 //to upload passport
+				 driver.findElement(By.xpath("//a[text()='Upload Document'][1]")).click();
+				 driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
+				 Thread.sleep(500);
+				 driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
+				 Thread.sleep(10000);
+				 //				
+				 //				// to upload NRIC
+				 //				
+				 driver.findElement(By.xpath("(//a[text()='Upload Document'])[2]")).click();
+				 driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
+				 Thread.sleep(500);
+				 driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
+				 Thread.sleep(10000);
+				 //				//to upload immunization 
+				 //					
+
+				 driver.findElement(By.xpath("(//a[text()='Upload Document'])[3]")).click();
+				 driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
+				 Thread.sleep(500);
+				 driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
+				 Thread.sleep(10000);
+
+				 //								// to upload TC
+				 driver.findElement(By.xpath("(//a[text()='Upload Document'])[4]")).click();
+				 driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
+				 Thread.sleep(500);
+				 driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
+				 Thread.sleep(10000);
+
+				 //								
+				 //								// to upload Ms
+				 driver.findElement(By.xpath("(//a[text()='Upload Document'])[5]")).click();
+				 driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
+				 Thread.sleep(500);
+				 driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
+				 Thread.sleep(5000);
+
+				 //								
+				 //								// to upload MR
+				 driver.findElement(By.xpath("(//a[text()='Upload Document'])[6]")).click();
+				 driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
+				 Thread.sleep(500);
+				 driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
+				 Thread.sleep(5000);
+				 //								
+				 //								// to upload other
+				 driver.findElement(By.xpath("(//a[text()='Upload Document'])[7]")).click();
+				 driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
+				 Thread.sleep(500);
+				 driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
+				 Thread.sleep(500);
+
+				 submitButtonPage3.click();
+				 Thread.sleep(5000);
+
+//				 String satisfactionNum = "4";
+	//
+//				 if(satisfactionNum.equals("1"))
+//				 {
+//					 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[1]")).click();
+//				 }
+//				 else if(satisfactionNum.equals("2"))
+//				 {
+//					 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[2]")).click();
+//				 }
+//				 else if(satisfactionNum.equals("3"))
+//				 {
+//					 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[3]")).click();
+//				 }
+//				 else if(satisfactionNum.equals("4"))
+//				 {
+//					 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[4]")).click();
+//				 }
+//				 else if(satisfactionNum.equals("5"))
+//				 {
+//					 driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[5]")).click();
+//				 }
+//				 //								 
+//				 Thread.sleep(500);
+//				 driver.findElement(By.xpath("//input[@name='AdditionalFeedback']")).sendKeys("Additional feedback test");
+//				 Thread.sleep(500);
+//				 submitBtn.click();
+			
 				}
-				else
-				{
-					driver.findElement(By.xpath("(//input[@name='StudentStayWithParent'])[2]")).click();
-				}
-
-				Thread.sleep(500);
-
-				driver.findElement(By.xpath("//input[@name='SibName']")).sendKeys("TestSibTestZZZ");
-				//						
-				driver.findElement(By.xpath("(//i[@class='glyphicon glyphicon-calendar'])[5]")).click();
-				Thread.sleep(500);
-				driver.findElement(By.xpath("//button[text()='Today']")).click();
-				driver.findElement(By.xpath("//input[@name='SibPrestSchlName']")).sendKeys("SiblingPresentSchool");
-				Thread.sleep(500);
-
-				saveAndContinueBtn.click();
-				Thread.sleep(5000);
-
-
-				// Page4
-
-				Thread.sleep(15000);
-				WebElement medicalConditionNo = driver.findElement(By.xpath("//input[@name='OptionSelected_1'][2]"));
-				medicalConditionNo.click();
-
-
-				WebElement hearingSpeechNo = driver.findElement(By.xpath("//input[@name='OptionSelected_2'][2]"));
-				hearingSpeechNo.click();
-
-
-				WebElement specialNeedNo = driver.findElement(By.xpath("//input[@name='OptionSelected_3'][2]"));
-				specialNeedNo.click();
-
-				WebElement behaviouralDiffNo = driver.findElement(By.xpath("//input[@name='OptionSelected_4'][2]"));
-				behaviouralDiffNo.click();
-
-
-				WebElement anyOtherNo = driver.findElement(By.xpath("//input[@name='OptionSelected_5'][2]"));
-				anyOtherNo.click();
-
-				String pickUp = "Bus";//
-
-				if(pickUp.equalsIgnoreCase("Bus"))
-				{
-					driver.findElement(By.xpath("//input[@value='School Bus']")).click();
-				}
-				else if(pickUp.equalsIgnoreCase("Mother"))
-				{
-					driver.findElement(By.xpath("//input[@value='Mother']")).click();
-				}
-				else if(pickUp.equalsIgnoreCase("Father"))
-				{
-					driver.findElement(By.xpath("//input[@value='Father']")).click();
-				}
-				else if(pickUp.equalsIgnoreCase("Another Individual"))
-				{
-					driver.findElement(By.xpath("//input[@value='Another Individual']")).click();
-				}
-
-				Thread.sleep(500);
-				//to upload passport
-				driver.findElement(By.xpath("//a[text()='Upload Document'][1]")).click();
-				driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
-				Thread.sleep(500);
-				driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
-				Thread.sleep(10000);
-				//						
-				//						// to upload NRIC
-				//						
-				driver.findElement(By.xpath("(//a[text()='Upload Document'])[2]")).click();
-				driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
-				Thread.sleep(500);
-				driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
-				Thread.sleep(10000);
-				//						//to upload immunization 
-				//							
-
-				driver.findElement(By.xpath("(//a[text()='Upload Document'])[3]")).click();
-				driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
-				Thread.sleep(500);
-				driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
-				Thread.sleep(10000);
-
-				//										// to upload TC
-				driver.findElement(By.xpath("(//a[text()='Upload Document'])[4]")).click();
-				driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
-				Thread.sleep(500);
-				driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
-				Thread.sleep(10000);
-
-				//										
-				//										// to upload Ms
-				driver.findElement(By.xpath("(//a[text()='Upload Document'])[5]")).click();
-				driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
-				Thread.sleep(500);
-				driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
-				Thread.sleep(5000);
-
-				//										
-				//										// to upload MR
-				driver.findElement(By.xpath("(//a[text()='Upload Document'])[6]")).click();
-				driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
-				Thread.sleep(500);
-				driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
-				Thread.sleep(5000);
-				//										
-				//										// to upload other
-				driver.findElement(By.xpath("(//a[text()='Upload Document'])[7]")).click();
-				driver.findElement(By.xpath("//input[@name='UploadPhotoModal']")).sendKeys("C:\\Users\\acharpe\\Downloads\\img1.jpg");
-				Thread.sleep(500);
-				driver.findElement(By.xpath("//button[normalize-space(text())='Upload']")).click();
-				Thread.sleep(5000);
-
-				String satisfactionNum = "4";
-
-				if(satisfactionNum.equals("1"))
-				{
-					driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[1]")).click();
-				}
-				else if(satisfactionNum.equals("2"))
-				{
-					driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[2]")).click();
-				}
-				else if(satisfactionNum.equals("3"))
-				{
-					driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[3]")).click();
-				}
-				else if(satisfactionNum.equals("4"))
-				{
-					driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[4]")).click();
-				}
-				else if(satisfactionNum.equals("5"))
-				{
-					driver.findElement(By.xpath("(//input[@name='SatisfactionLevel'])[5]")).click();
-				}
-				//										 
-				Thread.sleep(500);
-				driver.findElement(By.xpath("//input[@name='AdditionalFeedback']")).sendKeys("Additional feedback test");
-				Thread.sleep(500);
-				submitBtn.click();
-
-			}
+	   }
+			
 		}
 	}
 
@@ -1166,4 +1149,4 @@ public class admissionPage extends PreReq {
 
 
 
-}
+
